@@ -16,7 +16,7 @@
 //!
 //!
 //! To use `rocket_auth` include it as a dependency in your Cargo.toml file:
-//! ```
+//! ```toml
 //! [dependencies.rocket_auth]
 //! version = "0.4.0"
 //! features = ["sqlx-sqlite"]
@@ -133,8 +133,8 @@
 //!    format!("Hello {}.", user.email())
 //! }
 //! ```
-
-
+#![warn(clippy::all)]
+#![forbid(rust_2021_compatibility, rust_2021_prefixes_incompatible_syntax)]
 mod cookies;
 mod db;
 mod error;
@@ -169,11 +169,11 @@ pub use error::Error;
 #[cfg_attr(feature = "sqlx", derive(sqlx::FromRow))]
 #[derive(Serialize, Deserialize, PartialEq, Eq, Clone, Hash, PartialOrd, Ord)]
 pub struct User {
-    pub id: i32,
-    email: String,
-    pub is_admin: bool,
-    #[serde(skip_serializing)]
-    password: String,
+	pub id: i32,
+	email: String,
+	pub is_admin: bool,
+	#[serde(skip_serializing)]
+	password: String,
 }
 
 /// The [`AdminUser`] guard can be used analogously to [`User`].
@@ -190,13 +190,13 @@ pub struct User {
 pub struct AdminUser(User);
 
 impl Debug for AdminUser {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "Admin{:?}", self.0)
-    }
+	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+		write!(f, "Admin{:?}", self.0)
+	}
 }
 
 /// The `Users` struct is used to query users from the database, as well as to create, modify and delete them.
 pub struct Users {
-    conn: Box<dyn DBConnection>,
-    sess: Box<dyn SessionManager>,
+	conn: Box<dyn DBConnection>,
+	sess: Box<dyn SessionManager>,
 }
