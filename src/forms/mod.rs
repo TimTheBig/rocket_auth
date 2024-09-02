@@ -23,7 +23,6 @@ pub struct Signup {
 }
 impl Signup {
 	/// Only used for testing.
-	#[cfg(debug_assertions)]
 	pub fn new(email: String, password: String) -> Self {
 		Self { email, password }
 	}
