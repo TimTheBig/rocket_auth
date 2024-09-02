@@ -133,8 +133,7 @@
 //!    format!("Hello {}.", user.email())
 //! }
 //! ```
-#![warn(clippy::all)]
-#![forbid(rust_2021_compatibility, rust_2021_prefixes_incompatible_syntax)]
+
 mod cookies;
 mod db;
 mod error;
