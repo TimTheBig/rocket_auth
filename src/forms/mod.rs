@@ -21,6 +21,13 @@ pub struct Signup {
 	)]
 	pub(crate) password: String,
 }
+impl Signup {
+	/// Only used for testing.
+	#[cfg(debug_assertions)]
+	pub fn new(email: String, password: String) -> Self {
+		Self { email, password }
+	}
+}
 impl Debug for Signup {
 	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
 		write!(f, "Signup {{ email: {:?}, password: \"*****\" }}", self.email)
