@@ -97,7 +97,7 @@ impl Users {
 			conn: Box::new(Mutex::new(rusqlite::Connection::open(path)?)),
 			sess: Box::new(chashmap::CHashMap::new()),
 		};
-		futures::executor::block_on(users.conn.init())?;
+		tokio::runtime::Runtime::new().unwrap().block_on(users.conn.init())?;
 		users
 	}
 
