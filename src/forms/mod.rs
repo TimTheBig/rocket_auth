@@ -21,15 +21,6 @@ pub struct Signup {
 	)]
 	pub(crate) password: String,
 }
-impl Default for Signup {
-	/// Creates a new `Signup` form for testing purposes only.
-	fn default() -> Self {
-		Self {
-			email: "bob@gmail.com".into(),
-			password: "PassWord1".into(),
-		}
-	}
-}
 impl Debug for Signup {
 	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
 		write!(f, "Signup {{ email: {:?}, password: \"*****\" }}", self.email)
