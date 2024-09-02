@@ -21,10 +21,13 @@ pub struct Signup {
 	)]
 	pub(crate) password: String,
 }
-impl Signup {
-	/// Only used for testing.
-	pub fn new(email: String, password: String) -> Self {
-		Self { email, password }
+impl Default for Signup {
+	/// Creates a new `Signup` form for testing purposes only.
+	fn default() -> Self {
+		Self {
+			email: "bob@gmail.com".into(),
+			password: "PassWord1".into(),
+		}
 	}
 }
 impl Debug for Signup {
