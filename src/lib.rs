@@ -18,7 +18,7 @@
 //! To use `rocket_auth` include it as a dependency in your Cargo.toml file:
 //! ```toml
 //! [dependencies.rocket_auth]
-//! version = "0.4.0"
+//! version = "0.5"
 //! features = ["sqlx-sqlite"]
 //! ```
 //! # Quick overview
