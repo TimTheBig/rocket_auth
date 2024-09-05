@@ -88,7 +88,7 @@ A simple example of how to query a user with the `Users` struct:
 use rocket_auth::Users;
 
 #[get("/see-user/<id>")]
-async fn see_user(id: i32, users: &State<Users>) -> String {
+async fn see_user(id: Uuid, users: &State<Users>) -> String {
     let user = users.get_by_id(id).await.unwrap();
     format!("{}", json!(user))
 }

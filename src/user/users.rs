@@ -1,3 +1,4 @@
+use uuid::Uuid;
 use super::rand_string;
 use crate::db::DBConnection;
 use crate::prelude::*;
@@ -172,18 +173,19 @@ impl Users {
 
 	/// It queries a user by their email.
 	/// ```
+	/// use uuid::Uuid;
 	/// # use rocket::{State, get};
 	/// # use rocket_auth::{Error, Users};
 	/// # #[get("/user-information/<email>")]
 	/// # async fn user_information(email: String, users: &State<Users>) -> Result<(), Error> {
-	///  let user = users.get_by_id(3).await?;
+	///  let user = users.get_by_id(Uuid::default()).await?;
 	///  format!("{:?}", user);
 	/// # Ok(())
 	/// # }
 	/// # fn main() {}
 	/// ```
 	#[throws(Error)]
-	pub async fn get_by_id(&self, user_id: i32) -> User {
+	pub async fn get_by_id(&self, user_id: Uuid) -> User {
 		self.conn.get_user_by_id(user_id).await?
 	}
 
@@ -210,23 +212,25 @@ impl Users {
 	/// Deletes a user from de database. Note that this method won't delete the session.
 	/// To do that use [`Auth::delete`](crate::Auth::delete).
 	/// ```
+	/// use uuid::Uuid;
 	/// #[rocket::get("/delete_user/<id>")]
-	/// async fn delete_user(id: i32, users: &rocket::State<rocket_auth::Users>) -> Result<String, rocket_auth::Error> {
+	/// async fn delete_user(id: Uuid, users: &rocket::State<rocket_auth::Users>) -> Result<String, rocket_auth::Error> {
 	///     users.delete(id).await?;
 	///     Ok("The user has been deleted.".to_string())
 	/// }
 	/// ```
 	#[throws(Error)]
-	pub async fn delete(&self, id: i32) {
+	pub async fn delete(&self, id: Uuid) {
 		self.sess.remove(id)?;
 		self.conn.delete_user_by_id(id).await?;
 	}
 
 	/// Modifies a user in the database.
 	/// ```
+	/// use uuid::Uuid;
 	/// # use rocket_auth::{Users, Error};
 	/// # async fn func(users: Users) -> Result<(), Error> {
-	/// let mut user = users.get_by_id(4).await?;
+	/// let mut user = users.get_by_id(Uuid::default()).await?;
 	/// user.set_email("new@email.com");
 	/// user.set_password("new password");
 	/// users.modify(&user).await?;

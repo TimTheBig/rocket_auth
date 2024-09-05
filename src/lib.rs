@@ -85,12 +85,13 @@
 //! A simple example of how to query a user with the [`Users`] struct:
 //!
 //! ```rust
+//! use uuid::Uuid;
 //! # use rocket::{get, State};
 //! # use serde_json::json;
 //! use rocket_auth::Users;
 //!
 //! #[get("/see-user/<id>")]
-//! async fn see_user(id: i32, users: &State<Users>) -> String {
+//! async fn see_user(id: Uuid, users: &State<Users>) -> String {
 //!     let user = users.get_by_id(id).await.unwrap();
 //!     format!("{}", json!(user))
 //! }
@@ -148,6 +149,8 @@ mod tests;
 use std::fmt::Debug;
 
 pub use prelude::*;
+use uuid::{Uuid, Timestamp};
+use serde::{Serialize, Deserialize};
 
 // pub use language::Language;
 pub use crate::user::auth::Auth;
@@ -168,11 +171,23 @@ pub use error::Error;
 #[cfg_attr(feature = "sqlx", derive(sqlx::FromRow))]
 #[derive(Serialize, Deserialize, PartialEq, Eq, Clone, Hash, PartialOrd, Ord)]
 pub struct User {
-	pub id: i32,
+	pub id: Uuid,
 	email: String,
 	pub is_admin: bool,
 	#[serde(skip_serializing)]
 	password: String,
+}
+
+/// Function to generate a v7 uuid with a timestamp
+#[must_use]
+#[inline]
+pub(crate) fn uuid_w_ts() -> Uuid {
+	let ts: Timestamp = Timestamp::from_unix(
+		uuid::NoContext,
+		chrono::Utc::now().timestamp() as u64,
+		chrono::Utc::now().timestamp_subsec_nanos()
+	);
+	Uuid::new_v7(ts)
 }
 
 /// The [`AdminUser`] guard can be used analogously to [`User`].

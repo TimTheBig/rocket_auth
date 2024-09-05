@@ -5,6 +5,7 @@ use sql::*;
 use sqlx::mysql::MySqlPool;
 
 use sqlx::*;
+use uuid::Uuid;
 
 #[rocket::async_trait]
 impl DBConnection for MySqlPool {
@@ -32,7 +33,7 @@ impl DBConnection for MySqlPool {
 
 		Ok(())
 	}
-	async fn delete_user_by_id(&self, user_id: i32) -> Result<()> {
+	async fn delete_user_by_id(&self, user_id: Uuid) -> Result<()> {
 		query(REMOVE_BY_ID).bind(user_id).execute(self).await?;
 		Ok(())
 	}
@@ -40,7 +41,7 @@ impl DBConnection for MySqlPool {
 		query(REMOVE_BY_EMAIL).bind(email).execute(self).await?;
 		Ok(())
 	}
-	async fn get_user_by_id(&self, user_id: i32) -> Result<User> {
+	async fn get_user_by_id(&self, user_id: Uuid) -> Result<User> {
 		let user = query_as(SELECT_BY_ID).bind(user_id).fetch_one(self).await?;
 
 		Ok(user)

@@ -9,6 +9,7 @@ use tokio::sync::Mutex;
 use rusqlite::Row;
 #[cfg(feature = "rusqlite")]
 use rusqlite::*;
+use uuid::Uuid;
 #[cfg(feature = "rusqlite")]
 use std::convert::{TryFrom, TryInto};
 #[cfg(feature = "rusqlite")]
@@ -49,7 +50,7 @@ impl DBConnection for Mutex<rusqlite::Connection> {
 		Ok(())
 	}
 
-	async fn delete_user_by_id(&self, user_id: i32) -> Result<()> {
+	async fn delete_user_by_id(&self, user_id: Uuid) -> Result<()> {
 		let conn = self.lock().await;
 		block_in_place(|| conn.execute(REMOVE_BY_ID, params![user_id]))?;
 		Ok(())
@@ -61,7 +62,7 @@ impl DBConnection for Mutex<rusqlite::Connection> {
 		Ok(())
 	}
 
-	async fn get_user_by_id(&self, user_id: i32) -> Result<User> {
+	async fn get_user_by_id(&self, user_id: Uuid) -> Result<User> {
 		let conn = self.lock().await;
 		let user = block_in_place(|| {
 			conn.query_row(
@@ -118,7 +119,7 @@ impl DBConnection for Mutex<SqliteConnection> {
 			.await?;
 		Ok(())
 	}
-	async fn delete_user_by_id(&self, user_id: i32) -> Result<()> {
+	async fn delete_user_by_id(&self, user_id: Uuid) -> Result<()> {
 		query(REMOVE_BY_ID)
 			.bind(user_id)
 			.execute(&mut *self.lock().await)
@@ -132,7 +133,7 @@ impl DBConnection for Mutex<SqliteConnection> {
 			.await?;
 		Ok(())
 	}
-	async fn get_user_by_id(&self, user_id: i32) -> Result<User> {
+	async fn get_user_by_id(&self, user_id: Uuid) -> Result<User> {
 		let mut db = self.lock().await;
 
 		let user = query_as(SELECT_BY_ID).bind(user_id).fetch_one(&mut *db).await?;
@@ -173,7 +174,7 @@ impl DBConnection for SqlitePool {
 			.await?;
 		Ok(())
 	}
-	async fn delete_user_by_id(&self, user_id: i32) -> Result<()> {
+	async fn delete_user_by_id(&self, user_id: Uuid) -> Result<()> {
 		query(REMOVE_BY_ID) //
 			.bind(user_id)
 			.execute(self)
@@ -187,7 +188,7 @@ impl DBConnection for SqlitePool {
 			.await?;
 		Ok(())
 	}
-	async fn get_user_by_id(&self, user_id: i32) -> Result<User> {
+	async fn get_user_by_id(&self, user_id: Uuid) -> Result<User> {
 		let user = query_as(SELECT_BY_ID) //
 			.bind(user_id)
 			.fetch_one(self)

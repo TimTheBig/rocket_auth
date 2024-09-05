@@ -5,6 +5,8 @@ use crate::prelude::*;
 use argon2::verify_encoded as verify;
 
 use rand::random;
+use uuid::Uuid;
+
 pub fn rand_string(size: usize) -> String {
 	(0..)
 		.map(|_| random::<char>())
@@ -47,14 +49,14 @@ impl Users {
 	}
 
 	#[throws(Error)]
-	fn set_auth_key_for(&self, user_id: i32, time: Duration) -> String {
+	fn set_auth_key_for(&self, user_id: Uuid, time: Duration) -> String {
 		let key = rand_string(10);
 		self.sess.insert_for(user_id, key.clone(), time)?;
 		key
 	}
 
 	#[throws(Error)]
-	fn set_auth_key(&self, user_id: i32) -> String {
+	fn set_auth_key(&self, user_id: Uuid) -> String {
 		let key = rand_string(15);
 		self.sess.insert(user_id, key.clone())?;
 		key

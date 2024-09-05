@@ -52,7 +52,7 @@ impl User {
 	///     format!("Your user_id is: {}", user.id())
 	/// }
 	/// ```
-	pub fn id(&self) -> i32 {
+	pub fn id(&self) -> uuid::Uuid {
 		self.id
 	}
 	/// This is an accessor field for the private `email` field.
