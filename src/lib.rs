@@ -171,7 +171,7 @@ pub use error::Error;
 #[cfg_attr(feature = "sqlx", derive(sqlx::FromRow))]
 #[derive(Serialize, Deserialize, PartialEq, Eq, Clone, Hash, PartialOrd, Ord)]
 pub struct User {
-	pub id: Uuid,
+	pub(crate) id: Uuid,
 	email: String,
 	pub is_admin: bool,
 	#[serde(skip_serializing)]
