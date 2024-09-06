@@ -30,7 +30,6 @@ impl DBConnection for PgPool {
 			.bind(user.is_admin)
 			.execute(self)
 			.await?;
-
 		Ok(())
 	}
 	async fn delete_user_by_id(&self, user_id: Uuid) -> Result<()> {
@@ -51,3 +50,4 @@ impl DBConnection for PgPool {
 		Ok(user)
 	}
 }
+	
