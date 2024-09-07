@@ -204,7 +204,8 @@ impl Users {
 	pub async fn create_user(&self, email: &str, password: &str, is_admin: bool) {
 		let password = password.as_bytes();
 		let salt = rand_string(30);
-		let config = argon2::Config::default();
+		let mut config = argon2::Config::default();
+		config.ad = email.as_bytes();
 		let hash = argon2::hash_encoded(password, salt.as_bytes(), &config).unwrap();
 		self.conn.create_user(email, &hash, is_admin).await?;
 	}
