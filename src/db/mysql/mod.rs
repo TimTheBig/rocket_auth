@@ -1,4 +1,4 @@
-use crate::prelude::{Result, *};
+use crate::prelude::{Result, *, Error};
 mod sql;
 use sql::*;
 
@@ -13,7 +13,7 @@ impl DBConnection for MySqlPool {
 		query(CREATE_TABLE).execute(self).await?;
 		Ok(())
 	}
-	async fn create_user(&self, id: Uuid, email: &str, hash: &str, is_admin: bool) -> Result<()> {
+	async fn create_user(&self, id: Uuid, email: &str, hash: &str, is_admin: bool) -> Result<(), Error> {
 		query(INSERT_USER)
 			.bind(id)
 			.bind(email)
@@ -23,7 +23,7 @@ impl DBConnection for MySqlPool {
 			.await?;
 		Ok(())
 	}
-	async fn update_user(&self, user: &User) -> Result<()> {
+	async fn update_user(&self, user: &User) -> Result<(), Error> {
 		query(UPDATE_USER)
 			.bind(&user.email)
 			.bind(&user.password)
@@ -34,20 +34,20 @@ impl DBConnection for MySqlPool {
 
 		Ok(())
 	}
-	async fn delete_user_by_id(&self, user_id: Uuid) -> Result<()> {
+	async fn delete_user_by_id(&self, user_id: Uuid) -> Result<(), Error> {
 		query(REMOVE_BY_ID).bind(user_id).execute(self).await?;
 		Ok(())
 	}
-	async fn delete_user_by_email(&self, email: &str) -> Result<()> {
+	async fn delete_user_by_email(&self, email: &str) -> Result<(), Error> {
 		query(REMOVE_BY_EMAIL).bind(email).execute(self).await?;
 		Ok(())
 	}
-	async fn get_user_by_id(&self, user_id: Uuid) -> Result<User> {
+	async fn get_user_by_id(&self, user_id: Uuid) -> Result<User, Error> {
 		let user = query_as(SELECT_BY_ID).bind(user_id).fetch_one(self).await?;
 
 		Ok(user)
 	}
-	async fn get_user_by_email(&self, email: &str) -> Result<User> {
+	async fn get_user_by_email(&self, email: &str) -> Result<User, Error> {
 		let user = query_as(SELECT_BY_EMAIL).bind(email).fetch_one(self).await?;
 		Ok(user)
 	}
