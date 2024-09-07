@@ -207,7 +207,7 @@ impl Users {
 		let mut config = argon2::Config::default();
 		config.ad = email.as_bytes();
 		let hash = argon2::hash_encoded(password, salt.as_bytes(), &config).unwrap();
-		self.conn.create_user(email, &hash, is_admin).await?;
+		self.conn.create_user(crate::uuid_w_ts(), email, &hash, is_admin).await?;
 	}
 
 	/// Deletes a user from de database. Note that this method won't delete the session.

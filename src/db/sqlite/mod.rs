@@ -37,7 +37,7 @@ impl DBConnection for Mutex<rusqlite::Connection> {
 		Ok(())
 	}
 
-	async fn create_user(&self, email: &str, hash: &str, is_admin: bool) -> Result<()> {
+	async fn create_user(&self, id: Uuid, email: &str, hash: &str, is_admin: bool) -> Result<()> {
 		let conn = self.lock().await;
 		block_in_place(|| conn.execute(INSERT_USER, params![email, hash, is_admin]))?;
 
@@ -98,9 +98,10 @@ impl DBConnection for Mutex<SqliteConnection> {
 		println!("table created");
 		Ok(())
 	}
-	async fn create_user(&self, email: &str, hash: &str, is_admin: bool) -> Result<()> {
+	async fn create_user(&self, id: Uuid, email: &str, hash: &str, is_admin: bool) -> Result<()> {
 		let mut db = self.lock().await;
 		query(INSERT_USER)
+			.bind(id)
 			.bind(email)
 			.bind(hash)
 			.bind(is_admin)
@@ -155,8 +156,9 @@ impl DBConnection for SqlitePool {
 			.await?;
 		Ok(())
 	}
-	async fn create_user(&self, email: &str, hash: &str, is_admin: bool) -> Result<()> {
+	async fn create_user(&self, id:Uuid, email: &str, hash: &str, is_admin: bool) -> Result<()> {
 		query(INSERT_USER)
+			.bind(id)
 			.bind(email)
 			.bind(hash)
 			.bind(is_admin)
