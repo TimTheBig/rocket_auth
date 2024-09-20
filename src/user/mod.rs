@@ -28,14 +28,19 @@ impl Users {
 
 	#[throws(Error)]
 	async fn login(&self, form: &Login) -> String {
-		let form_pwd = &form.password.as_bytes();
+		let form_pwd = form.password.as_bytes();
+		let salt: &[u8] = "˙ecøß¬VR9u76egXm/L6kFlQHK8mCuGpXNGWmKrHE3w4beFATc".as_bytes();
+		let mut config = argon2::Config::default();
+		config.ad = form.email.as_bytes();
+		let form_hash = argon2::hash_encoded(&form_pwd, salt, &config)?;
+
 		let user = self
 			.conn
 			.get_user_by_email(&form.email.to_lowercase())
 			.await
 			.map_err(|_| Error::EmailDoesNotExist(form.email.clone()))?;
 		let user_pwd = &user.password;
-		if verify(user_pwd, form_pwd)? {
+		if verify(user_pwd, form_hash.as_bytes())? {
 			self.set_auth_key(user.id)?
 		} else {
 			throw!(Error::UnauthorizedError)
