@@ -1,5 +1,4 @@
 use uuid::Uuid;
-use super::rand_string;
 use crate::db::DBConnection;
 use crate::prelude::*;
 
