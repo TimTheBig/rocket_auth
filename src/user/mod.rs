@@ -40,7 +40,7 @@ impl Users {
 			.await
 			.map_err(|_| Error::EmailDoesNotExist(form.email.clone()))?;
 		let user_pwd = &user.password;
-		if verify(user_pwd, form_hash.as_bytes())? {
+		if user_pwd == &form_hash {
 			self.set_auth_key(user.id)?
 		} else {
 			throw!(Error::UnauthorizedError)
