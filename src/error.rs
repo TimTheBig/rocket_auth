@@ -134,10 +134,16 @@ use rocket::response::{self, Responder, Response};
 use std::io::Cursor;
 
 /// Error payload body
-#[derive(serde::Serialize, serde::Deserialize, Debug)]
+#[derive(serde::Serialize, serde::Deserialize)]
 pub struct Payload {
-	status: String,
-	message: String,
+	pub status: String,
+	pub message: String,
+}
+
+impl fmt::Display for Payload {
+	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+		write!(f, "status: {}, message: {}", self.status, self.message)
+	}
 }
 
 impl<'r> Responder<'r, 'static> for Error {
