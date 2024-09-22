@@ -1,4 +1,5 @@
 use std::*;
+use rocket::http::{ContentType, Status};
 
 #[non_exhaustive]
 #[derive(thiserror::Error, Debug)]
@@ -84,6 +85,21 @@ impl<T> From<PoisonError<T>> for Error {
 	}
 }
 
+impl From<Error> for Status {
+	/// Convert an auth error to an http status code.\
+	/// the `Responder` impl does this as well.
+	fn from(e: Error) -> Self {
+		match e {
+			Error::UserNotFoundError | Error::EmailDoesNotExist(_) => Status::NotFound,
+			Error::EmailAlreadyExists => Status::Conflict,
+			Error::InvalidEmailAddressError | Error::FormValidationError(_) | Error::FormValidationErrors(_) => Status::BadRequest,
+			Error::UnmanagedStateError | Error::SqlxError(_) | Error::IOError(_) | Error::SerdeError(_) | Error::Argon2ParsingError(_) => Status::InternalServerError,
+			Error::UnauthorizedError | Error::UnauthenticatedError => Status::Unauthorized,
+			_ => Status::InternalServerError,
+		}
+	}
+}
+
 use self::Error::*;
 impl Error {
 	fn message(&self) -> String {
@@ -110,7 +126,6 @@ impl Error {
 	}
 }
 
-use rocket::http::ContentType;
 use rocket::request::Request;
 use rocket::response::{self, Responder, Response};
 use serde_json::*;
@@ -118,14 +133,16 @@ use std::io::Cursor;
 
 impl<'r> Responder<'r, 'static> for Error {
 	fn respond_to(self, _: &'r Request<'_>) -> response::Result<'static> {
-		let payload = to_string(&json!({
+		let payload = rmp_serde::encode::to_vec(&json!({
 			"status": "error",
 			"message": self.message(),
 		}))
 		.unwrap();
+
 		Response::build()
 			.sized_body(payload.len(), Cursor::new(payload))
-			.header(ContentType::new("application", "json"))
+			.header(ContentType::new("application", "msgpack"))
+			.status(self.into())
 			.ok()
 	}
 }
