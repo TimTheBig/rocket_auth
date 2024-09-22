@@ -131,15 +131,21 @@ impl Error {
 
 use rocket::request::Request;
 use rocket::response::{self, Responder, Response};
-use serde_json::*;
 use std::io::Cursor;
+
+/// Error payload body
+#[derive(serde::Serialize, serde::Deserialize, Debug)]
+pub struct Payload<'r> {
+	status: &'r str,
+	message: String,
+}
 
 impl<'r> Responder<'r, 'static> for Error {
 	fn respond_to(self, _: &'r Request<'_>) -> response::Result<'static> {
-		let payload = rmp_serde::encode::to_vec(&json!({
-			"status": "error",
-			"message": self.message(),
-		}))
+		let payload = rmp_serde::encode::to_vec(&Payload {
+			status: "error",
+			message: self.message(),
+		})
 		.unwrap();
 
 		Response::build()

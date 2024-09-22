@@ -1,6 +1,6 @@
 // pub use crate::language::Language;
 pub use crate::cookies::Session;
-pub use crate::error::Error;
+pub use crate::error::{Error, Payload};
 pub use crate::forms::{Login, Signup};
 pub use crate::{AdminUser, Auth, User, Users};
 pub use crate::user::rand_string;
