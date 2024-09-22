@@ -124,6 +124,9 @@ impl Error {
 			_ => "undefined".into(),
 		}
 	}
+	pub fn to_status(&self) -> Status {
+		self.into()
+	}
 }
 
 use rocket::request::Request;
@@ -142,7 +145,7 @@ impl<'r> Responder<'r, 'static> for Error {
 		Response::build()
 			.sized_body(payload.len(), Cursor::new(payload))
 			.header(ContentType::new("application", "msgpack"))
-			.status(self.into())
+			.status((&self).into())
 			.ok()
 	}
 }
