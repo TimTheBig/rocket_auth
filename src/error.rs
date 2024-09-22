@@ -85,10 +85,10 @@ impl<T> From<PoisonError<T>> for Error {
 	}
 }
 
-impl From<Error> for Status {
+impl From<&Error> for Status {
 	/// Convert an auth error to an http status code.\
 	/// the `Responder` impl does this as well.
-	fn from(e: Error) -> Self {
+	fn from(e: &Error) -> Self {
 		match e {
 			Error::UserNotFoundError | Error::EmailDoesNotExist(_) => Status::NotFound,
 			Error::EmailAlreadyExists => Status::Conflict,
