@@ -135,15 +135,15 @@ use std::io::Cursor;
 
 /// Error payload body
 #[derive(serde::Serialize, serde::Deserialize, Debug)]
-pub struct Payload<'r> {
-	status: &'r str,
+pub struct Payload {
+	status: String,
 	message: String,
 }
 
 impl<'r> Responder<'r, 'static> for Error {
 	fn respond_to(self, _: &'r Request<'_>) -> response::Result<'static> {
 		let payload = rmp_serde::encode::to_vec(&Payload {
-			status: "error",
+			status: "error".into(),
 			message: self.message(),
 		})
 		.unwrap();
