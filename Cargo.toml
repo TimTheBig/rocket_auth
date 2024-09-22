@@ -43,7 +43,7 @@ chashmap = "2.2.2"
 thiserror = "1.0.33"
 async-trait = "0.1.58"
 culpa = "1.0.2"
-chrono = { version = "^0.4.30", default-features = false }
+chrono = { version = "^0.4.30", default-features = false, features = ["clock"] }
 validator = { version = "0.16.1", features = ["derive"] }
 uuid = { version = "1.10", features = ["v7", "serde"] }
 

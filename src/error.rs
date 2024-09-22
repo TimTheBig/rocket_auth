@@ -13,6 +13,10 @@ pub enum Error {
 	#[error("The mutex guarding the Sqlite connection was poisoned.")]
 	MutexPoisonError,
 
+	/// If a rust conversion fails
+	#[error("Rust type conversion failed")]
+	TypeConversionError,
+
 	/// Thrown when the requested user does not exist.
 	#[error("Could not find any user that fits the specified requirements.")]
 	UserNotFoundError,

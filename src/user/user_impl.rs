@@ -117,7 +117,7 @@ impl<'r> FromRequest<'r> for User {
 			Error(x) => return Error(x),
 			Forward(x) => return Forward(x),
 		};
-		if let Some(user) = auth.get_user().await {
+		if let Ok(user) = auth.get_user().await {
 			Outcome::Success(user)
 		} else {
 			Outcome::Error((Status::Unauthorized, crate::Error::UnauthorizedError))
@@ -136,7 +136,7 @@ impl<'r> FromRequest<'r> for AdminUser {
 			Error(x) => return Error(x),
 			Forward(x) => return Forward(x),
 		};
-		if let Some(user) = auth.get_user().await {
+		if let Ok(user) = auth.get_user().await {
 			if user.is_admin {
 				return Outcome::Success(AdminUser(user));
 			}

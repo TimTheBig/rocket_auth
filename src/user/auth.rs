@@ -197,16 +197,15 @@ impl<'a> Auth<'a> {
 	///     format!("{:?}", auth.get_user().await)
 	/// }
 	/// ```
-	pub async fn get_user(&self) -> Option<User> {
+	pub async fn get_user(&self) -> Result<User, Error> {
 		if !self.is_auth() {
-			return None;
+			return Err(Error::UnauthenticatedError);
 		}
-		let id = self.session.as_ref()?.id;
-		if let Ok(user) = self.users.get_by_id(id).await {
-			Some(user)
-		} else {
-			None
-		}
+		let id = match self.session.as_ref() {
+			Some(id) => id,
+			None => return Err(Error::TypeConversionError),
+		}.id;
+		self.users.get_by_id(id).await
 	}
 
 	/// Logs the currently authenticated user out.
