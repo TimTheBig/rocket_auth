@@ -28,8 +28,10 @@ impl User {
 		crate::forms::is_secure(new)?;
 		let password = new.as_bytes();
 		let salt = rand_string(10);
-		let mut config = argon2::Config::default();
-		config.ad = self.email.as_bytes();
+		let config = argon2::Config {
+			ad: self.email.as_bytes(),
+			..Default::default()
+		};
 		let hash = argon2::hash_encoded(password, salt.as_bytes(), &config).unwrap();
 		self.password = hash;
 	}
@@ -53,7 +55,8 @@ impl User {
 	///     format!("Your user_id is: {}", user.id())
 	/// }
 	/// ```
-	pub fn id(&self) -> uuid::Uuid {
+	#[must_use = "use the users id"]
+	pub const fn id(&self) -> uuid::Uuid {
 		self.id
 	}
 	/// This is an accessor field for the private `email` field.
@@ -66,6 +69,7 @@ impl User {
 	///     format!("Your user_id is: {}", user.email())
 	/// }
 	/// ```
+	#[must_use = "use the users email"]
 	pub fn email(&self) -> &str {
 		&self.email
 	}
@@ -146,7 +150,7 @@ impl<'r> FromRequest<'r> for AdminUser {
 }
 
 use argon2::verify_encoded;
-use std::ops::*;
+use std::ops::DerefMut;
 
 impl Deref for AdminUser {
 	type Target = User;

@@ -97,7 +97,9 @@ impl From<&Error> for Status {
 			Error::UserNotFoundError | Error::EmailDoesNotExist(_) => Status::NotFound,
 			Error::EmailAlreadyExists => Status::Conflict,
 			Error::InvalidEmailAddressError | Error::FormValidationError(_) | Error::FormValidationErrors(_) => Status::BadRequest,
-			Error::UnmanagedStateError | Error::SqlxError(_) | Error::IOError(_) | Error::SerdeError(_) | Error::Argon2ParsingError(_) => Status::InternalServerError,
+			Error::UnmanagedStateError | Error::SerdeError(_) | Error::Argon2ParsingError(_) => Status::InternalServerError,
+			#[cfg(feature = "sqlx")]
+			Error::SqlxError(_) | Error::IOError(_)  => Status::InternalServerError,
 			Error::UnauthorizedError | Error::UnauthenticatedError => Status::Unauthorized,
 			_ => Status::InternalServerError,
 		}
@@ -109,7 +111,7 @@ impl Error {
 	fn message(&self) -> String {
 		match self {
 			InvalidEmailAddressError | EmailAlreadyExists | UnauthorizedError | UserNotFoundError => {
-				format!("{}", self)
+				format!("{self}")
 			}
 			FormValidationErrors(source) => {
 				source
@@ -123,11 +125,12 @@ impl Error {
 					.fold(String::new(), |a, b| a + &b)
 			}
 			#[cfg(debug_assertions)]
-			e => format!("{}", e),
+			e => format!("{e}"),
 			#[allow(unreachable_patterns)]
 			_ => "undefined".into(),
 		}
 	}
+
 	pub fn to_status(&self) -> Status {
 		self.into()
 	}

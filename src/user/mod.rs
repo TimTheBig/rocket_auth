@@ -10,7 +10,7 @@ use uuid::Uuid;
 pub fn rand_string(size: usize) -> String {
 	(0..)
 		.map(|_| random::<char>())
-		.filter(|c| c.is_ascii())
+		.filter(char::is_ascii)
 		.map(char::from)
 		.take(size)
 		.collect()
@@ -70,7 +70,7 @@ impl Users {
 		let password = &form.password;
 		let result = self.create_user(email, password, false).await;
 		match result {
-			Ok(_) => (),
+			Ok(()) => (),
 			#[cfg(feature = "sqlx")]
 			Err(Error::SqlxError(sqlx::Error::Database(error))) => {
 				if error.code() == Some("23000".into()) {

@@ -1,4 +1,4 @@
-//! rocket_auth provides a ready-to-use  backend agnostic API for authentication management.
+//! **rocket_auth** provides a ready-to-use  backend agnostic API for authentication management.
 //! It supports connections for SQLite and Postgresql. It lets you create, delete, and authenticate users.
 //! The available features are:
 //! * `sqlx-sqlite`: for interacting with a SQLite database using `sqlx`.
@@ -123,7 +123,7 @@
 //! }
 //! ```
 //!
-//! ## AdminUser guard
+//! ## `AdminUser` guard
 //! The [`AdminUser`] guard can be used analogously to [`User`].
 //! It will restrict content, so that it can be viewed by admins only.
 //! ```
@@ -134,6 +134,7 @@
 //!    format!("Hello {}.", user.email())
 //! }
 //! ```
+#![warn(clippy::all, clippy::missing_const_for_fn)]
 
 mod cookies;
 mod db;

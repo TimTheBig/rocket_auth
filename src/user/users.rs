@@ -48,7 +48,7 @@ impl Users {
 	/// ```
 	#[throws(Error)]
 	pub async fn create_table(&self) {
-		self.conn.init().await?
+		self.conn.init().await?;
 	}
 	/// Opens a redis connection. It allows for sessions to be stored persistently across
 	/// different launches. Note that persistent sessions also require a `secret_key` to be set in the [Rocket.toml](https://rocket.rs/v0.5-rc/guide/configuration/#configuration) configuration file.
@@ -203,8 +203,10 @@ impl Users {
 	pub async fn create_user(&self, email: &str, password: &str, is_admin: bool) {
 		let password = password.as_bytes();
 		let salt = "˙ecøß¬VR9u76egXm/L6kFlQHK8mCuGpXNGWmKrHE3w4beFATc".as_bytes();
-		let mut config = argon2::Config::default();
-		config.ad = email.as_bytes();
+		let config = argon2::Config {
+			ad: email.as_bytes(),
+			..Default::default()
+		};
 		let hash = argon2::hash_encoded(password, salt, &config)?;
 		self.conn.create_user(crate::uuid_w_ts(), email, &hash, is_admin).await?;
 	}

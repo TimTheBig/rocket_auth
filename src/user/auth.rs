@@ -180,6 +180,7 @@ impl<'a> Auth<'a> {
 	/// }
 	/// # fn main() {}
 	/// ```
+	#[must_use]
 	pub fn is_auth(&self) -> bool {
 		if let Some(session) = &self.session {
 			self.users.is_auth(session)
