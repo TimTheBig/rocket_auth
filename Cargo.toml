@@ -1,7 +1,7 @@
 [package]
 name = "rocket_auth"
-version = "0.6.1"
-authors = ["tvallotton@uc.cl"]
+version = "0.7.0"
+authors = ["tvallotton@uc.cl", "TimTheBig"]
 edition = "2021"
 license = "MIT or Apache-2.0"
 description = "A high level authentication management library for Rocket applications. It supports both SQLite and Postgres."
@@ -26,7 +26,7 @@ tokio-postgres = ["dep:tokio-postgres"]
 rusqlite = ["dep:rusqlite"]
 
 [dependencies.rusqlite]
-version = "0.30.0"
+version = "0.32"
 optional = true
 features = ["uuid"]
 
@@ -49,10 +49,9 @@ uuid = { version = "1.10", features = ["v7", "serde"] }
 
 
 [dependencies.sqlx]
-version = "0.7.4"
+version = "0.8.2"
 optional = true
 features = ["uuid"]
-
 
 [dependencies.rocket]
 version = "0.5.1"
@@ -80,8 +79,7 @@ version = "1.20.6"
 features = ["rt", "rt-multi-thread"]
 
 [dev-dependencies]
-tokio-postgres= "0.7.8"
-
+tokio-postgres = "0.7.8"
 
 [dev-dependencies.rocket]
 version = "0.5.1"
@@ -91,14 +89,12 @@ features = ["secrets", "json"]
 version = "0.21.7"
 features = ["aio", "tokio-comp"]
 
-
 [dev-dependencies.rocket_dyn_templates]
 version = "0.2.0"
 features = ["tera"]
 
-
 [dev-dependencies.sqlx]
-version = "0.7.4"
+version = "0.8"
 features = ["runtime-tokio-rustls"]
 
 [dev-dependencies.rocket_auth]
