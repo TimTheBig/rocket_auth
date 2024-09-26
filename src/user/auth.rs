@@ -88,7 +88,7 @@ impl<'a> Auth<'a> {
 	/// }
 	/// ```
 	#[throws(Error)]
-	pub async fn login(&self, form: &Login) {
+	pub async fn login(&mut self, form: &Login) {
 		let key = self.users.login(form).await?;
 		let user = self.users.get_by_email(&form.email.to_lowercase()).await?;
 		let session = Session {
@@ -97,8 +97,9 @@ impl<'a> Auth<'a> {
 			auth_key: key,
 			time_stamp: now(),
 		};
-		let to_str = format!("{}", json!(session));
+		let to_str = format!("{}", json!(&session));
 		self.cookies.add_private(Cookie::new("rocket_auth", to_str));
+		self.session = Some(session);
 	}
 
 	/// Logs a user in for the specified period of time.
