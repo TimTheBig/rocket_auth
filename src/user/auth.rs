@@ -114,7 +114,7 @@ impl<'a> Auth<'a> {
 	/// }
 	/// ```
 	#[throws(Error)]
-	pub async fn login_for(&self, form: &Login, time: Duration) {
+	pub async fn login_for(&mut self, form: &Login, time: Duration) {
 		let key = self.users.login_for(form, time).await?;
 		let user = self.users.get_by_email(&form.email.to_lowercase()).await?;
 
@@ -124,9 +124,10 @@ impl<'a> Auth<'a> {
 			auth_key: key,
 			time_stamp: now(),
 		};
-		let to_str = format!("{}", json!(session));
+		let to_str = format!("{}", json!(&session));
 		let cookie = Cookie::new("rocket_auth", to_str);
 		self.cookies.add_private(cookie);
+		self.session = Some(session);
 	}
 
 	/// Creates a new user from a form or a json. The user will not be authenticated by default.
@@ -160,7 +161,7 @@ impl<'a> Auth<'a> {
 	/// }
 	/// ```
 	#[throws(Error)]
-	pub async fn signup_for(&self, form: &Signup, time: Duration) {
+	pub async fn signup_for(&mut self, form: &Signup, time: Duration) {
 		self.users.signup(form).await?;
 		self.login_for(&form.clone().into(), time).await?;
 	}
