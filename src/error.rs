@@ -99,7 +99,12 @@ impl From<&Error> for Status {
 			Error::InvalidEmailAddressError | Error::FormValidationError(_) | Error::FormValidationErrors(_) => Status::BadRequest,
 			Error::UnmanagedStateError | Error::SerdeError(_) | Error::Argon2ParsingError(_) => Status::InternalServerError,
 			#[cfg(feature = "sqlx")]
-			Error::SqlxError(_) | Error::IOError(_)  => Status::InternalServerError,
+			Error::IOError(_)  => Status::InternalServerError,
+			#[cfg(feature = "sqlx")]
+			Error::SqlxError(e) => match e {
+				sqlx::Error::RowNotFound => Status::NotFound,
+				_ => Status::InternalServerError,
+			},
 			Error::UnauthorizedError | Error::UnauthenticatedError => Status::Unauthorized,
 			_ => Status::InternalServerError,
 		}
