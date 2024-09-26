@@ -36,7 +36,7 @@ impl Users {
 			.await
 			.map_err(|_| Error::EmailDoesNotExist(form.email.clone()))?;
 		let user_pwd = &user.password;
-		if argon2::verify_encoded_ext(user_pwd, form_pwd, &[], form.email.as_bytes())? {
+		if argon2::verify_encoded_ext(user_pwd, form_pwd, &[], form.email.to_lowercase().as_bytes())? {
 			self.set_auth_key(user.id)?
 		} else {
 			throw!(Error::UnauthorizedError)
