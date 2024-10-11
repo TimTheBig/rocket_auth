@@ -48,14 +48,14 @@
 //! use rocket_auth::{Users, Error, Auth, Signup, Login};
 //!
 //! #[post("/signup", data="<form>")]
-//! async fn signup(form: Form<Signup>, auth: Auth<'_>) -> Result<&'static str, Error> {
+//! async fn signup(form: Form<Signup>, mut auth: Auth<'_>) -> Result<&'static str, Error> {
 //!     auth.signup(&form).await?;
 //!     auth.login(&form.into());
 //!     Ok("You signed up.")
 //! }
 //!
 //! #[post("/login", data="<form>")]
-//! async fn login(form: rocket::serde::json::Json<Login>, auth: Auth<'_>) -> Result<&'static str, Error> {
+//! async fn login(form: rocket::serde::json::Json<Login>, mut auth: Auth<'_>) -> Result<&'static str, Error> {
 //!     auth.login(&form).await?;
 //!     Ok("You're logged in.")
 //! }
@@ -177,18 +177,6 @@ pub struct User {
 	pub is_admin: bool,
 	#[serde(skip_serializing)]
 	password: String,
-}
-
-/// Function to generate a v7 uuid with a timestamp
-#[must_use]
-#[inline]
-pub(crate) fn uuid_w_ts() -> Uuid {
-	let ts: Timestamp = Timestamp::from_unix(
-		uuid::NoContext,
-		chrono::Utc::now().timestamp() as u64,
-		chrono::Utc::now().timestamp_subsec_nanos()
-	);
-	Uuid::new_v7(ts)
 }
 
 /// The [`AdminUser`] guard can be used analogously to [`User`].

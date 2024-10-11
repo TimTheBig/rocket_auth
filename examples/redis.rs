@@ -12,7 +12,7 @@ fn get_login() -> Template {
 }
 
 #[post("/login", data = "<form>")]
-async fn post_login(auth: Auth<'_>, form: Form<Login>) -> Result<Redirect, Error> {
+async fn post_login(mut auth: Auth<'_>, form: Form<Login>) -> Result<Redirect, Error> {
 	println!("{:?}", auth.login(&form).await);
 
 	Ok(Redirect::to("/"))
@@ -24,7 +24,7 @@ async fn get_signup() -> Template {
 }
 
 #[post("/signup", data = "<form>")]
-async fn post_signup(auth: Auth<'_>, form: Form<Signup>) -> Result<Redirect, Error> {
+async fn post_signup(mut auth: Auth<'_>, form: Form<Signup>) -> Result<Redirect, Error> {
 	auth.signup(&form).await?;
 	auth.login(&form.into()).await?;
 

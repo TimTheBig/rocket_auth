@@ -17,13 +17,13 @@ use std::time::Duration;
 /// use rocket_auth::{Users, Error, Auth, Signup, Login};
 ///
 /// #[post("/signup", data="<form>")]
-/// async fn signup(form: Form<Signup>, auth: Auth<'_>) {
+/// async fn signup(form: Form<Signup>, mut auth: Auth<'_>) {
 ///     auth.signup(&form).await;
 ///     auth.login(&form.into());
 /// }
 ///
 /// #[post("/login", data="<form>")]
-/// fn login(form: Form<Login>, auth: Auth) {
+/// fn login(form: Form<Login>, mut auth: Auth) {
 ///     auth.login(&form);
 /// }
 ///
@@ -83,7 +83,7 @@ impl<'a> Auth<'a> {
 	/// # use rocket::{get, post, form::Form};
 	/// # use rocket_auth::{Auth, Login};
 	/// #[post("/login", data="<form>")]
-	/// fn login(form: Form<Login>, auth: Auth) {
+	/// fn login(form: Form<Login>, mut auth: Auth) {
 	///     auth.login(&form);
 	/// }
 	/// ```
@@ -108,7 +108,7 @@ impl<'a> Auth<'a> {
 	/// # use rocket_auth::{Login, Auth};
 	/// # use std::time::Duration;
 	/// #[post("/login", data="<form>")]
-	/// fn login(form: Form<Login>, auth: Auth) {
+	/// fn login(form: Form<Login>, mut auth: Auth) {
 	///     let one_hour = Duration::from_secs(60 * 60);
 	///     auth.login_for(&form, one_hour);
 	/// }
@@ -137,7 +137,7 @@ impl<'a> Auth<'a> {
 	/// # use rocket_auth::{Auth, Signup, Error};
 	/// # use std::time::Duration;
 	/// #[post("/signup", data="<form>")]
-	/// async fn signup(form: Form<Signup>, auth: Auth<'_>) -> Result<&'static str, Error>{
+	/// async fn signup(form: Form<Signup>, mut auth: Auth<'_>) -> Result<&'static str, Error>{
 	///     auth.signup(&form).await?;
 	///     auth.login(&form.into()).await?;
 	///     Ok("Logged in")
@@ -155,7 +155,7 @@ impl<'a> Auth<'a> {
 	/// # use rocket_auth::{Auth, Signup};
 	/// # use std::time::Duration;
 	/// #[post("/signup", data="<form>")]
-	/// fn signup_for(form: Form<Signup>, auth: Auth) {
+	/// fn signup_for(form: Form<Signup>, mut auth: Auth) {
 	///     let one_hour = Duration::from_secs(60 * 60);
 	///     auth.signup_for(&form, one_hour);
 	/// }

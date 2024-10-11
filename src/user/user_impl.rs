@@ -27,12 +27,12 @@ impl User {
 	pub fn set_password(&mut self, new: &str) {
 		crate::forms::is_secure(new)?;
 		let password = new.as_bytes();
-		let salt = rand_string(10);
+		let salt = [rand::random::<u8>(); 128];
 		let config = argon2::Config {
 			ad: self.email.as_bytes(),
 			..Default::default()
 		};
-		let hash = argon2::hash_encoded(password, salt.as_bytes(), &config).unwrap();
+		let hash = argon2::hash_encoded(password, &salt, &config).unwrap();
 		self.password = hash;
 	}
 

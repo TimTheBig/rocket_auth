@@ -201,14 +201,13 @@ impl Users {
 	/// ```
 	#[throws(Error)]
 	pub async fn create_user(&self, email: &str, password: &str, is_admin: bool) {
-		let password = password.as_bytes();
-		let salt = "˙ecøß¬VR9u76egXm/L6kFlQHK8mCuGpXNGWmKrHE3w4beFATc".as_bytes();
+		let salt = [rand::random::<u8>(); 128];
 		let config = argon2::Config {
 			ad: email.as_bytes(),
 			..Default::default()
 		};
-		let hash = argon2::hash_encoded(password, salt, &config)?;
-		self.conn.create_user(crate::uuid_w_ts(), email, &hash, is_admin).await?;
+		let hash = argon2::hash_encoded(password.as_bytes(), &salt, &config)?;
+		self.conn.create_user(Uuid::now_v7(), email, &hash, is_admin).await?;
 	}
 
 	/// Deletes a user from de database. Note that this method won't delete the session.

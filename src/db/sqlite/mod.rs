@@ -39,7 +39,7 @@ impl DBConnection for Mutex<rusqlite::Connection> {
 
 	async fn create_user(&self, id: Uuid, email: &str, hash: &str, is_admin: bool) -> Result<()> {
 		let conn = self.lock().await;
-		block_in_place(|| conn.execute(INSERT_USER, params![email, hash, is_admin]))?;
+		block_in_place(|| conn.execute(INSERT_USER, params![id, email, hash, is_admin]))?;
 
 		Ok(())
 	}
